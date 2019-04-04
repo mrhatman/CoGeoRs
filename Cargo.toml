@@ -1,7 +1,9 @@
 [package]
-name = "CoGeoRs"
+name = "cogeors"
 version = "0.1.0"
-authors = ["mrhatman <lucasince@gmail.com>"]
+authors = ["lucas.ince"]
 edition = "2018"
 
 [dependencies]
+num-traits = "*"
+rand = "*"
