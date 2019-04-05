@@ -7,17 +7,14 @@ use num_traits::Float;
 
 
 ///Preforms the Jarvis March/Gift Wrapping Algorithm on a set of points.
-pub fn jarvis_march<T>(points : &Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Float{
+pub fn jarvis_march<T>(points : &[Point2D<T>]) -> Vec<Point2D<T>> where T: Float{
 	//https://en.wikipedia.org/wiki/Gift_wrapping_algorithm
 	
 	//find left most point
 	let mut left_most_point = points[0];
 	
 	for &p in points.iter(){
-		if p.x < left_most_point.x {
-			left_most_point = p;
-		}
-		else if (p.x == left_most_point.x) && (p.y < left_most_point.y) {
+		if p.x < left_most_point.x || ((p.x == left_most_point.x) && (p.y < left_most_point.y)) {
 			left_most_point = p;
 		}
 	}
@@ -99,10 +96,7 @@ pub fn graham_scan<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T:
 	let mut left_lowest_most_point = points[0];
 	
 	for &p in points.iter(){
-		if p.x < left_lowest_most_point.x {
-			left_lowest_most_point = p;
-		}
-		else if (p.x == left_lowest_most_point.x) && (p.y < left_lowest_most_point.y) {
+		if p.x < left_lowest_most_point.x || ((p.x == left_lowest_most_point.x) && (p.y < left_lowest_most_point.y)) {
 			left_lowest_most_point = p;
 		}
 	}

@@ -1,9 +1,9 @@
 //!Algorithms for calculating intersection points of line sets.
-use crate::primatives2d::{Point2D,Line2D,TurnDirection};
+use crate::primatives2d::{Point2D,Line2D};
 use num_traits::Float;
 
 ///Preforms the Bentley Ottmann Line Intersection Algorithm on a set of lines.
-pub fn bentley_ottmann<T>(lines : &Vec<Line2D<T>>) -> Vec<Point2D<T>> where T: Float{
+pub fn bentley_ottmann<T>(lines : &[Line2D<T>]) -> Vec<Point2D<T>> where T: Float{
 	//https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm
 	
 	Vec::new()
