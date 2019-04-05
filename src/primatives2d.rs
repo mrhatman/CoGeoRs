@@ -1,19 +1,24 @@
 use num_traits::Float;
 use num_traits::Zero;
-
 use std::cmp::Ordering;
 
+///2D Point
 #[derive(Copy,Clone,Debug,PartialEq,Eq)]
 pub struct Point2D<T: Float+Zero>{
+	///Point's x position
 	pub x : T,
+	///Point's y position
 	pub y : T,
 }
 
 impl<T: Float+Zero> Point2D<T >{
+
+	///Creates a Point.
 	pub fn new(x:T,y:T) -> Self{
 		Point2D{x,y}
 	}
-	
+
+	///Returns the rotational direction of the points (self,p1,p1).
 	pub fn turn_direction(self, p1: Point2D<T>,p2: Point2D<T>) -> TurnDirection{
 		let line1 = (p1.x -self.x, p1.y -self.y);
 		let line2 = (p2.x -self.x, p2.y -self.y);
@@ -32,7 +37,8 @@ impl<T: Float+Zero> Point2D<T >{
 			TurnDirection::NoTurn
 		}
 	}
-	
+
+	///Partial comparision function ordered by x value then by y in case of ties.
 	pub fn x_then_y_partial_cmp(&self,other: &Point2D<T>) -> Option<Ordering> {
 		if self.x != other.x{
 			self.x.partial_cmp(&other.x)
@@ -40,8 +46,9 @@ impl<T: Float+Zero> Point2D<T >{
 		else{
 			self.y.partial_cmp(&other.y)
 		}
-	}	
-	
+	}
+
+	///Partial comparision function ordered polar cordinate in relation to rotational point.
 	pub fn rotation_point_cmp(&self,other: &Point2D<T>,rotational_point: &Point2D<T>) -> Option<Ordering> {
 		match rotational_point.turn_direction(self.clone(),other.clone()){
 			TurnDirection::LeftTurn => Some(Ordering::Greater),
@@ -53,24 +60,28 @@ impl<T: Float+Zero> Point2D<T >{
 	}
 }
 
-
+///2D Line
 #[derive(Copy,Clone,Debug,PartialEq,Eq)]
 pub struct Line2D<T: Float+Zero>{
+	///Point 1
 	pub p1 : Point2D<T>,
+	///Point 2
 	pub p2 : Point2D<T>,
 }
 
 impl<T: Float+Zero> Line2D<T >{
+	///Creates a 2D Line from p1 to p2.
 	pub fn new(p1:Point2D<T>,p2:Point2D<T>) -> Self{
 		Line2D{p1,p2}
 	}
 	
-	pub fn contains_point(&self, other: &Point2D<T>) -> bool{
+	///returns true if 'point' is on this line
+	pub fn contains_point(&self, point: &Point2D<T>) -> bool{
 		
-		if other.x < self.p1.x.min(self.p2.x) ||
-			(other.y < self.p1.x.min(self.p2.y)) ||
-			(other.x > self.p1.x.max(self.p2.x)) ||
-			(other.y > self.p1.y.max(self.p2.y)){
+		if point.x < self.p1.x.min(self.p2.x) ||
+			(point.y < self.p1.x.min(self.p2.y)) ||
+			(point.x > self.p1.x.max(self.p2.x)) ||
+			(point.y > self.p1.y.max(self.p2.y)){
 				
 				return false;
 		}
@@ -78,12 +89,13 @@ impl<T: Float+Zero> Line2D<T >{
 		let range_x = self.p2.x - self.p1.x;
 		let range_y = self.p2.y - self.p1.y;
 	
-		let x = (other.x - self.p1.x) / range_x; 
-		let y = (other.y - self.p1.y) / range_y;
+		let x = (point.x - self.p1.x) / range_x; 
+		let y = (point.y - self.p1.y) / range_y;
 
 		x == y
 	}	
-	
+
+	///Returns true if the lines intersect.
 	pub fn intersects_with_line(&self, other: &Line2D<T>) -> bool{
 		
 		((self.p1.turn_direction(self.p2,other.p1) !=  self.p1.turn_direction(self.p2,other.p2)) && 
@@ -92,7 +104,8 @@ impl<T: Float+Zero> Line2D<T >{
 		(self.contains_point(&other.p1) ||self.contains_point(&other.p2)))
 
 	}	
-	
+
+	///Returns the intersection point between 2 lines, or None if they don't intersect.
 	pub fn intersection_point(&self, other: &Line2D<T>) -> Option<Point2D<T>>{
 		
 		if !self.intersects_with_line(other){
@@ -123,6 +136,7 @@ impl<T: Float+Zero> Line2D<T >{
 	
 }
 
+///Enum representing rotation.
 #[derive(Copy,Clone,Debug,PartialEq,Eq)]
 pub enum TurnDirection{
 	RightTurn,

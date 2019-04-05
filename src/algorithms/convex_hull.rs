@@ -1,8 +1,13 @@
+//!Algorithms for creating convex hulls.
+// from a set of Point2Ds.
+//Results starts from the left most point and goes clockwise.
+
 use crate::primatives2d::{Point2D,TurnDirection};
 use num_traits::Float;
 
 
-fn jarvis_march<T>(points : &Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Float{
+///Preforms the Jarvis March/Gift Wrapping Algorithm on a set of points.
+pub fn jarvis_march<T>(points : &Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Float{
 	//https://en.wikipedia.org/wiki/Gift_wrapping_algorithm
 	
 	//find left most point
@@ -44,7 +49,8 @@ fn jarvis_march<T>(points : &Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Float{
 	hull
 }
 
-fn monotone_chain<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Float{
+///Preforms the Monotone Chain Algorithm on a set of points.
+pub fn monotone_chain<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Float{
 	//https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
 	
 	points.sort_by(|a,b| a.x_then_y_partial_cmp(b).unwrap());
@@ -86,8 +92,8 @@ fn monotone_chain<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: 
 	stack
 }
 
-
-fn graham_scan<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Float{
+///Preforms the Graham Scan Algorithm on a set of points.
+pub fn graham_scan<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Float{
 	//https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
 	
 	//find left lowest most point
