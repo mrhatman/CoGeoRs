@@ -22,18 +22,18 @@ impl<T: Float+Zero> Point2D<T >{
 	pub fn turn_direction(&self, p1: &Point2D<T>,p2: &Point2D<T>) -> TurnDirection{
 		let line1 = (p1.x -self.x, p1.y -self.y);
 		let line2 = (p2.x -self.x, p2.y -self.y);
-		
+
 		let det = (line1.0 * line2.1) - (line1.1 * line2.0);
-		
+
 		if det < T::zero()
-		{	
+		{
 			TurnDirection::RightTurn
 		}
 		else if det > T::zero()
-		{	
+		{
 			TurnDirection::LeftTurn
 		}
-		else{	
+		else{
 			TurnDirection::NoTurn
 		}
 	}
@@ -45,6 +45,16 @@ impl<T: Float+Zero> Point2D<T >{
 		}
 		else{
 			self.y.partial_cmp(&other.y)
+		}
+	}
+
+	///Comparision function ordered by x value then by y in case of ties.
+	pub fn x_then_y_cmp(&self,other: &Point2D<T>) -> Ordering {
+		if let Some(ord)= self.x_then_y_partial_cmp(other) {
+			ord
+		}
+		else{
+			Ordering::Greater
 		}
 	}
 
@@ -61,7 +71,7 @@ impl<T: Float+Zero> Point2D<T >{
 }
 
 ///2D Line
-#[derive(Copy,Clone,Debug,PartialEq,Eq)]
+#[derive(Copy,Clone,Debug)]
 pub struct Line2D<T: Float+Zero>{
 	///Point 1
 	pub p1 : Point2D<T>,
@@ -74,48 +84,48 @@ impl<T: Float+Zero> Line2D<T >{
 	pub fn new(p1:Point2D<T>,p2:Point2D<T>) -> Self{
 		Line2D{p1,p2}
 	}
-	
+
 	///returns true if 'point' is on this line
 	pub fn contains_point(&self, point: &Point2D<T>) -> bool{
-		
+
 		if point.x < self.p1.x.min(self.p2.x) ||
 			(point.y < self.p1.x.min(self.p2.y)) ||
 			(point.x > self.p1.x.max(self.p2.x)) ||
 			(point.y > self.p1.y.max(self.p2.y)){
-				
+
 				return false;
 		}
-		
+
 		let range_x = self.p2.x - self.p1.x;
 		let range_y = self.p2.y - self.p1.y;
-	
-		let x = (point.x - self.p1.x) / range_x; 
+
+		let x = (point.x - self.p1.x) / range_x;
 		let y = (point.y - self.p1.y) / range_y;
 
 		x == y
-	}	
+	}
 
 	///Returns true if the lines intersect.
 	pub fn intersects_with_line(&self, other: &Line2D<T>) -> bool{
-		
+
 		((self.p1.turn_direction(&self.p2,&other.p1) !=  self.p1.turn_direction(&self.p2,&other.p2)) &&
 		(other.p1.turn_direction(&other.p2,&self.p1) != other.p1.turn_direction(&other.p2,&self.p2))) ||
 		((self.p1.turn_direction(&self.p2,&other.p1) == TurnDirection::NoTurn) && (self.p1.turn_direction(&self.p2,&other.p2) == TurnDirection::NoTurn)&&
 		(self.contains_point(&other.p1) ||self.contains_point(&other.p2)))
 
-	}	
+	}
 
 	///Returns the intersection point between 2 lines, or None if they don't intersect.
 	pub fn intersection_point(&self, other: &Line2D<T>) -> Option<Point2D<T>>{
-		
+
 		if !self.intersects_with_line(other){
 			None
 		}
 		else{
 			let slope_self = (self.p2.y - self.p1.y)/(self.p2.x - self.p1.x);
 			let slope_other = (other.p2.y - other.p1.y)/(other.p2.x - other.p1.x);
-			
-			
+
+
 			if slope_other == slope_self{
 				if self.p1.y < other.p1.y.max(other.p2.y) && self.p1.y > other.p1.y.min(other.p2.y) {
 					Some(self.p1)
@@ -127,14 +137,44 @@ impl<T: Float+Zero> Line2D<T >{
 			else{
 				let x = (other.p1.y - self.p1.y - (slope_other*other.p1.x) + (slope_self*self.p1.x))/ (slope_self-slope_other);
 				let y = slope_self*(x-self.p1.x) + self.p1.y;
-				
+
 				Some(Point2D::new(x,y))
 			}
 		}
-		
+
 	}
-	
+
 }
+
+
+impl<T:Float+Zero> Ord for Line2D<T> {
+    fn cmp(&self, other: &Line2D<T>) -> Ordering {
+       match self.p1.x_then_y_cmp(&other.p1){
+		   Ordering::Greater => Ordering::Greater,
+		   Ordering::Less => Ordering::Less,
+		   Ordering::Equal => self.p2.x_then_y_cmp(&other.p2),
+	   }
+    }
+}
+
+impl<T:Float+Zero> PartialOrd for Line2D<T> {
+    fn partial_cmp(&self, other: &Line2D<T>) -> Option<Ordering> {
+		match self.p1.x_then_y_partial_cmp(&other.p1)?{
+		   Ordering::Greater => Some(Ordering::Greater),
+		   Ordering::Less => Some(Ordering::Less),
+		   Ordering::Equal => self.p2.x_then_y_partial_cmp(&other.p2),
+	   }
+    }
+}
+
+impl<T:Float+Zero> PartialEq for Line2D<T> {
+    fn eq(&self, other: &Line2D<T>) -> bool {
+		(self.p1 == other.p1 && self.p2 == other.p2)|| (self.p2 == other.p1 && self.p1 == other.p2)
+    }
+}
+impl<T:Float+Zero> Eq for Line2D<T> {
+}
+
 
 ///Enum representing rotation.
 #[derive(Copy,Clone,Debug,PartialEq,Eq)]
