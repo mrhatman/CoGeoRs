@@ -28,9 +28,9 @@ pub fn jarvis_march<T>(points : &Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Fl
 	let mut current_point = left_most_point;
 	
 	loop{
-		let mut next_point = points[0];
+		let mut next_point =points[0];
 		for &p in points.iter(){
-			if ( next_point == current_point) || ( current_point.turn_direction(next_point,p) == TurnDirection::LeftTurn)
+			if (next_point == current_point) || ( current_point.turn_direction(&next_point,&p) == TurnDirection::LeftTurn)
 			{
 				next_point = p;
 			}
@@ -45,7 +45,7 @@ pub fn jarvis_march<T>(points : &Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Fl
 		
 		
 	}
-	
+
 	hull
 }
 
@@ -57,28 +57,27 @@ pub fn monotone_chain<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where
 	
 	let mut stack : Vec<Point2D<T>>= Vec::new();
 	
-	for &p in points.iter(){
+	for p in points.iter(){
 
 		while 
 			stack.len() >= 2 &&
-			(stack[stack.len()-1].turn_direction(stack[stack.len()-2],p) == TurnDirection::RightTurn)
+			(stack[stack.len()-1].turn_direction(&stack[stack.len()-2],p) == TurnDirection::RightTurn)
 		{ 
 			stack.pop();
 		}
 		
-		stack.push(p);
+		stack.push(*p);
 		
 	}
 	stack.pop();
 	
 	let last_len = stack.len();
 	
-	for q in 0..points.len(){
-		let p = points[points.len()-q-1];
+	for &p in points.iter().rev(){
 		while 
 		
 			stack.len() >= last_len+2 &&
-			(stack[stack.len()-1].turn_direction(stack[stack.len()-2],p) == TurnDirection::RightTurn)
+			(stack[stack.len()-1].turn_direction(&stack[stack.len()-2],&p) == TurnDirection::RightTurn)
 		{ 
 			stack.pop();
 		}
@@ -116,7 +115,7 @@ pub fn graham_scan<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T:
 
 		while 
 			stack.len() >= 2 &&
-			(stack[stack.len()-1].turn_direction(stack[stack.len()-2],p) == TurnDirection::RightTurn)
+			(stack[stack.len()-1].turn_direction(&stack[stack.len()-2],&p) == TurnDirection::RightTurn)
 		{ 
 			stack.pop();
 		}
@@ -134,7 +133,6 @@ pub fn graham_scan<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T:
 #[cfg(test)]
 mod algorithms_test {
 	use super::*;
-	use test::Bencher;
 	
     #[test]
     fn jarvis_march_test() {

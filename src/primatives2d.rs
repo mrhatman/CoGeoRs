@@ -19,7 +19,7 @@ impl<T: Float+Zero> Point2D<T >{
 	}
 
 	///Returns the rotational direction of the points (self,p1,p1).
-	pub fn turn_direction(self, p1: Point2D<T>,p2: Point2D<T>) -> TurnDirection{
+	pub fn turn_direction(&self, p1: &Point2D<T>,p2: &Point2D<T>) -> TurnDirection{
 		let line1 = (p1.x -self.x, p1.y -self.y);
 		let line2 = (p2.x -self.x, p2.y -self.y);
 		
@@ -50,7 +50,7 @@ impl<T: Float+Zero> Point2D<T >{
 
 	///Partial comparision function ordered polar cordinate in relation to rotational point.
 	pub fn rotation_point_cmp(&self,other: &Point2D<T>,rotational_point: &Point2D<T>) -> Option<Ordering> {
-		match rotational_point.turn_direction(self.clone(),other.clone()){
+		match rotational_point.turn_direction(self,other){
 			TurnDirection::LeftTurn => Some(Ordering::Greater),
 			TurnDirection::RightTurn  => Some(Ordering::Less),
 			TurnDirection::NoTurn    => {
@@ -98,9 +98,9 @@ impl<T: Float+Zero> Line2D<T >{
 	///Returns true if the lines intersect.
 	pub fn intersects_with_line(&self, other: &Line2D<T>) -> bool{
 		
-		((self.p1.turn_direction(self.p2,other.p1) !=  self.p1.turn_direction(self.p2,other.p2)) && 
-		(other.p1.turn_direction(other.p2,self.p1) != other.p1.turn_direction(other.p2,self.p2))) ||
-		((self.p1.turn_direction(self.p2,other.p1) == TurnDirection::NoTurn) && (self.p1.turn_direction(self.p2,other.p2) == TurnDirection::NoTurn)&&
+		((self.p1.turn_direction(&self.p2,&other.p1) !=  self.p1.turn_direction(&self.p2,&other.p2)) &&
+		(other.p1.turn_direction(&other.p2,&self.p1) != other.p1.turn_direction(&other.p2,&self.p2))) ||
+		((self.p1.turn_direction(&self.p2,&other.p1) == TurnDirection::NoTurn) && (self.p1.turn_direction(&self.p2,&other.p2) == TurnDirection::NoTurn)&&
 		(self.contains_point(&other.p1) ||self.contains_point(&other.p2)))
 
 	}	
@@ -158,9 +158,9 @@ mod primatives_test {
 	#[test]
     fn turn_direction_test() {
         let p =Point2D::new(0.0,0.0);
-		assert_eq!(p.turn_direction(Point2D::new(1.0,1.0),Point2D::new(1.0,0.0)), TurnDirection::RightTurn);
-		assert_eq!(p.turn_direction(Point2D::new(1.0,1.0),Point2D::new(1.0,2.0)), TurnDirection::LeftTurn);
-		assert_eq!(p.turn_direction(Point2D::new(1.0,1.0),Point2D::new(2.0,2.0)), TurnDirection::NoTurn);
+		assert_eq!(p.turn_direction(&Point2D::new(1.0,1.0),&Point2D::new(1.0,0.0)), TurnDirection::RightTurn);
+		assert_eq!(p.turn_direction(&Point2D::new(1.0,1.0),&Point2D::new(1.0,2.0)), TurnDirection::LeftTurn);
+		assert_eq!(p.turn_direction(&Point2D::new(1.0,1.0),&Point2D::new(2.0,2.0)), TurnDirection::NoTurn);
 
 	}	
 	
