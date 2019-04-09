@@ -26,9 +26,9 @@ fn criterion_benchmark(c: &mut Criterion) {
     let mut mt_points = jm_points.clone();
     let mut gs_points = jm_points.clone();
 
-    c.bench_function("jarvis march", move |b| b.iter(|| jarvis_march(&mut jm_points)));
-    c.bench_function("monotone chain", move |b| b.iter(|| monotone_chain(&mut mt_points)));
-    c.bench_function("graham scan", move |b| b.iter(|| jarvis_march(&mut gs_points)));
+    c.bench_function("jarvis march", move |b| b.iter(|| jarvis_march(&mut jm_points.clone())));
+    c.bench_function("monotone chain", move |b| b.iter(|| monotone_chain(&mut mt_points.clone())));
+    c.bench_function("graham scan", move |b| b.iter(|| jarvis_march(&mut gs_points.clone())));
 }
 
 criterion_group!(benches, criterion_benchmark);
