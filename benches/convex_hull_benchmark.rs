@@ -19,7 +19,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     let mut jm_points = Vec::new();
     jm_points.push(Point2D::new(0.5,0.5));
 
-    for _ in 0..100000{
+    for _ in 0..10000{
         jm_points.push( Point2D::new(rng.gen(),rng.gen()));
     }
 

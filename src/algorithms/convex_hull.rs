@@ -10,19 +10,20 @@ use num_traits::Float;
 pub fn jarvis_march<T>(points : &[Point2D<T>]) -> Vec<Point2D<T>> where T: Float{
 	//https://en.wikipedia.org/wiki/Gift_wrapping_algorithm
 	
+
 	//find left most point
-	let mut left_most_point = points[0];
-	
-	for &p in points.iter(){
-		if p.x < left_most_point.x || ((p.x == left_most_point.x) && (p.y < left_most_point.y)) {
-			left_most_point = p;
+	let mut left_lowest_most_point = points[0];
+	for q in 1..points.len(){
+		let p = points[q];
+		if p.x < left_lowest_most_point.x || ((p.x == left_lowest_most_point.x) && (p.y < left_lowest_most_point.y)) {
+			left_lowest_most_point = p;
 		}
 	}
-	
+
 	let mut hull = Vec::new();
-	hull.push(left_most_point);
+	hull.push(left_lowest_most_point);
 	
-	let mut current_point = left_most_point;
+	let mut current_point = left_lowest_most_point;
 	
 	loop{
 		let mut next_point =points[0];
@@ -32,7 +33,7 @@ pub fn jarvis_march<T>(points : &[Point2D<T>]) -> Vec<Point2D<T>> where T: Float
 				next_point = p;
 			}
 		}
-		if next_point == left_most_point{
+		if next_point == left_lowest_most_point{
 			break;
 		}
 		else{
@@ -92,10 +93,10 @@ pub fn monotone_chain<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where
 pub fn graham_scan<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T: Float{
 	//https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
 	
-	//find left lowest most point
+	//find left most point
 	let mut left_lowest_most_point = points[0];
-	
-	for &p in points.iter(){
+	for q in 1..points.len(){
+		let p = points[q];
 		if p.x < left_lowest_most_point.x || ((p.x == left_lowest_most_point.x) && (p.y < left_lowest_most_point.y)) {
 			left_lowest_most_point = p;
 		}

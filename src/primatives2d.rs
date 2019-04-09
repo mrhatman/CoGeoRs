@@ -23,13 +23,13 @@ impl<T: Float+Zero> Point2D<T >{
 		let line1 = (p1.x -self.x, p1.y -self.y);
 		let line2 = (p2.x -self.x, p2.y -self.y);
 
-		let det = (line1.0 * line2.1) - (line1.1 * line2.0);
-
-		if det < T::zero()
+		let left  = (line1.1 * line2.0);
+		let right = (line1.0 * line2.1);
+		if left> right
 		{
 			TurnDirection::RightTurn
 		}
-		else if det > T::zero()
+		else if left < right
 		{
 			TurnDirection::LeftTurn
 		}
