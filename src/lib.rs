@@ -5,9 +5,11 @@
 
 pub use crate::{
     primatives2d::{Point2D,Line2D},
+    dcel::DCEL,
 };
 
 mod primatives2d;
+mod dcel;
 pub mod algorithms;
 
 
