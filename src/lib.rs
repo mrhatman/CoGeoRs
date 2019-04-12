@@ -10,7 +10,6 @@ pub use crate::{
 
 mod primatives2d;
 mod dcel;
-mod dcelRC;
 pub mod algorithms;
 
 
