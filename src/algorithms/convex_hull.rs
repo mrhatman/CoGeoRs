@@ -102,7 +102,7 @@ pub fn graham_scan<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T:
 		}
 	}
 	
-	points.sort_by(|a,b| a.rotation_point_cmp(b,&left_lowest_most_point).unwrap());
+	points.sort_by(|a,b| a.rotation_point_cmp(&b,&left_lowest_most_point).unwrap());
 	
 	let mut stack : Vec<Point2D<T>>= Vec::new();
 	
