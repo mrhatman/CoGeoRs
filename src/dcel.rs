@@ -48,13 +48,13 @@ impl<T :Float> DCEL<T>{
 
 		let ( mut last_outer_edge, mut last_inner_edge) =(out_edge.clone(),in_edge.clone());
 
-		for q in 1.. points.len(){
+		for &point in  points.iter().skip(1){
 			let (out_edge,in_edge) = dcel.create_twin_edges();
 
 			out_edge.borrow_mut().incident_face = Some(outer_face.clone());
 			in_edge.borrow_mut().incident_face  = Some(inner_face.clone());
 
-			let vertex = dcel.create_vertex(points[q]);
+			let vertex = dcel.create_vertex(point);
 			out_edge.borrow_mut().origin = Some(vertex.clone());
 			vertex.borrow_mut().incident_edge = Some(out_edge.clone());
 
@@ -279,8 +279,8 @@ impl<T :Float> DCEL<T>{
 	///Finds area of a polygon including the inner_component
 	fn get_polygon_area_inclusive(&self, face:  Ptr<Face<T >>) -> T{
 
-		shoelace((PolygonIterator::new(face.borrow().outer_component.as_ref().unwrap().clone())
-			.map(|edge| Box::new(edge.borrow().origin.as_ref().unwrap().borrow().coordinate)) )
+		shoelace(PolygonIterator::new(face.borrow().outer_component.as_ref().unwrap().clone())
+			.map(|edge| Box::new(edge.borrow().origin.as_ref().unwrap().borrow().coordinate))
 			)
 
 	}

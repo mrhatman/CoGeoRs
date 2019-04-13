@@ -17,7 +17,7 @@ pub fn shoelace<'a,T:Float+Zero+'a,I,P>(mut points : I ) -> T where
 	for point in points
 	{
 		area =area+ (point.x + last_point.x)*(point.y - last_point.y);
-		last_point = point.clone();
+		last_point = *point;
 	}
 	area =area+ (first_point.x + last_point.x)*(first_point.y - last_point.y);
 

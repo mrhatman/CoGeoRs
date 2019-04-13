@@ -12,13 +12,8 @@ pub fn jarvis_march<T>(points : &[Point2D<T>]) -> Vec<Point2D<T>> where T: Float
 	
 
 	//find left most point
-	let mut left_lowest_most_point = points[0];
-	for q in 1..points.len(){
-		let p = points[q];
-		if p.x < left_lowest_most_point.x || ((p.x == left_lowest_most_point.x) && (p.y < left_lowest_most_point.y)) {
-			left_lowest_most_point = p;
-		}
-	}
+	let left_lowest_most_point = *points.iter().min_by(|&a,&b| a.x_then_y_partial_cmp(b).unwrap()).unwrap();
+
 
 	let mut hull = Vec::new();
 	hull.push(left_lowest_most_point);
@@ -94,13 +89,7 @@ pub fn graham_scan<T>(points :&mut  Vec<Point2D<T>>) -> Vec<Point2D<T>> where T:
 	//https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
 	
 	//find left most point
-	let mut left_lowest_most_point = points[0];
-	for q in 1..points.len(){
-		let p = points[q];
-		if p.x < left_lowest_most_point.x || ((p.x == left_lowest_most_point.x) && (p.y < left_lowest_most_point.y)) {
-			left_lowest_most_point = p;
-		}
-	}
+	let left_lowest_most_point = *points.iter().min_by(|&a,&b| a.x_then_y_partial_cmp(b).unwrap()).unwrap();
 	
 	points.sort_by(|a,b| a.rotation_point_cmp(&b,&left_lowest_most_point).unwrap());
 	

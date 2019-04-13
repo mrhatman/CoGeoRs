@@ -23,8 +23,8 @@ impl<T: Float+Zero> Point2D<T >{
 		let line1 = (p1.x -self.x, p1.y -self.y);
 		let line2 = (p2.x -self.x, p2.y -self.y);
 
-		let left  = (line1.1 * line2.0);
-		let right = (line1.0 * line2.1);
+		let left  = line1.1 * line2.0;
+		let right = line1.0 * line2.1;
 		if left> right
 		{
 			TurnDirection::RightTurn
