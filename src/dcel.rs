@@ -20,16 +20,30 @@ pub struct DCEL<T:Float>{
 	half_edge_count :usize,
 }
 
+impl<T :Float> Drop for DCEL<T> {
+    fn drop(&mut self) {
+        for he in self.half_edges.iter(){
+			he.borrow_mut().clean();
+		}
+		for f in self.faces.iter(){
+			f.borrow_mut().clean();
+		}
+		for v in self.vertices.iter(){
+			v.borrow_mut().clean();
+		}
+    }
+}
+
 impl<T :Float> DCEL<T>{
 
 
-	fn create_empty() -> Self{
+	pub fn create_empty() -> Self{
 		DCEL{vertices:Vec::new(),faces: Vec::new(),half_edges: Vec::new(),vertex_count:0,face_count:0,half_edge_count:0}
 	}
 
 
 
-	fn create_from_point_list(points : &[Point2D<T>]) -> Self{
+	pub fn create_from_point_list(points : &[Point2D<T>]) -> Self{
 		let mut dcel = DCEL::create_empty();
 
 		let outer_face = dcel.create_face();
@@ -320,6 +334,11 @@ struct Vertex<T:Float>{
     coordinate    : Point2D<T>,
     incident_edge : Option<Ptr<HalfEdge<T>>>,
 }
+impl<T:Float> Vertex<T>{
+	fn clean(&mut self) {
+		self.incident_edge = None;
+	}
+}
 impl<T:Float> PartialEq for Vertex<T> {
     fn eq(&self, other: &Vertex<T>) -> bool {
 		self.index == other.index
@@ -331,6 +350,13 @@ struct Face<T:Float>{
     outer_component: Option<Ptr<HalfEdge<T>>>,
     inner_component: Vec<Ptr<HalfEdge<T>>>,
 
+}
+
+impl<T:Float> Face<T>{
+	fn clean(&mut self) {
+		self.outer_component = None;
+		self.inner_component.clear();
+	}
 }
 impl<T:Float> PartialEq for Face<T> {
     fn eq(&self, other: &Face<T>) -> bool {
